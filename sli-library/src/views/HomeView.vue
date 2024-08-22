@@ -1,32 +1,12 @@
 <template>
-  <!-- <div class="form">
-    <h1>User Information Form / Credentials</h1>
-    <form>
-      <label for="username">Username:</label><br />
-      <input type="text" id="username" name="username" /><br />
-
-      <label for="password">Password:</label><br />
-      <input type="password" id="password" name="password" /><br />
-
-      <label for="isAustralian">Australian Resident?</label><br />
-      <input type="checkbox" id="isAustralian" name="isAustralian" /><br />
-
-      <label for="reason">Reason For Joining:</label><br />
-      <textarea id="reason" name="reason" rows="3"></textarea><br />
-
-      <label for="gender">Gender</label><br />
-      <select id="gender">
-        <option value="female">Female</option>
-        <option value="male">Male</option>
-        <option value="other">Other</option>
-      </select>
-    </form>
-  </div> -->
-
   <div class="container mt-5">
     <div class="row">
       <div class="col-md-8 offset-md-2">
-        <h1 class="text-center">User Information Form</h1>
+        <h1 class="text-center">Library Registration Form</h1>
+        <p class="text-center">
+          This form now includes validation. Registered users are displayed in a data table below
+          (PrimeVue).
+        </p>
         <form @submit.prevent="submitForm">
           <div class="row mb-3">
             <!-- Username -->
@@ -73,11 +53,11 @@
 
             <!-- Confirm Password -->
             <div class="col-md-6 col-sm-6 col-lg-4 col-xl-6">
-              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <label for="confirm-password" class="form-label">Confirm Password</label>
               <input
                 type="password"
                 class="form-control"
-                id="confirmPassword"
+                id="confirm-password"
                 @blur="() => validateConfirmPassword(true)"
                 @input="() => validateConfirmPassword(false)"
                 v-model="formData.confirmPassword"
@@ -118,47 +98,35 @@
             </div>
           </div>
           <div class="mb-3">
+            <!-- Reasons for Joining -->
             <label for="reason" class="form-label">Reason For Joining</label>
             <textarea
               class="form-control"
               id="reason"
               rows="3"
               @blur="() => validateReason(true)"
-              @input="() => validateReason(false)"
+              @input="() => validateReason(true)"
               v-model="formData.reason"
             ></textarea>
-            <div v-if="errors.reason" class="text-danger">{{ errors.reason }}</div>
+            <div
+              v-if="errors.reason"
+              :class="{
+                'text-danger': !errors.reason.includes('friend'),
+                'text-success': errors.reason.includes('friend')
+              }"
+            >
+              {{ errors.reason }}
+            </div>
           </div>
           <div class="text-center">
             <button type="submit" class="btn btn-primary me-2">Submit</button>
             <button type="button" class="btn btn-secondary" @click="clearForm">Clear</button>
           </div>
         </form>
-
-        <!-- <div class="row mt-5" v-if="submittedCards.length">
-          <div class="d-flex justify-content-start">
-            <div
-              v-for="(card, index) in submittedCards"
-              :key="index"
-              class="card m-2"
-              style="width: 18rem"
-            >
-              <div class="card-header">User Information</div>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">Username: {{ card.username }}</li>
-                <li class="list-group-item">Password: {{ card.password }}</li>
-                <li class="list-group-item">
-                  Australian Resident: {{ card.isAustralian ? 'Yes' : 'No' }}
-                </li>
-                <li class="list-group-item">Gender: {{ card.gender }}</li>
-                <li class="list-group-item">Reason: {{ card.reason }}</li>
-              </ul>
-            </div>
-          </div>
-        </div> -->
       </div>
     </div>
-    <div class="row mt-5" v-if="submittedCards.length">
+    <div class="row mt-5">
+      <h4>This is a Primevue Datatable:</h4>
       <DataTable :value="submittedCards" tableStyle="min-width: 50rem">
         <Column
           v-for="col of columns"
@@ -167,6 +135,28 @@
           :header="col.header"
         ></Column>
       </DataTable>
+    </div>
+
+    <div class="row mt-5" v-if="submittedCards.length">
+      <div class="d-flex justify-content-start">
+        <div
+          v-for="(card, index) in submittedCards"
+          :key="index"
+          class="card m-2"
+          style="width: 18rem"
+        >
+          <div class="card-header">User Information</div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Username: {{ card.username }}</li>
+            <li class="list-group-item">Password: {{ card.password }}</li>
+            <li class="list-group-item">
+              Australian Resident: {{ card.isAustralian ? 'Yes' : 'No' }}
+            </li>
+            <li class="list-group-item">Gender: {{ card.gender }}</li>
+            <li class="list-group-item">Reason: {{ card.reason }}</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -318,6 +308,8 @@ const validateGender = (blur) => {
 const validateReason = (blur) => {
   if (formData.value.reason.length > 200) {
     if (blur) errors.value.reason = 'Reason cannot exceed 200 characters long'
+  } else if (formData.value.reason.includes('friend')) {
+    errors.value.reason = 'Great to have a friend'
   } else {
     errors.value.reason = null
   }
@@ -325,7 +317,16 @@ const validateReason = (blur) => {
 </script>
 
 <style scoped>
-/* Our logic will go here */
+/* Class selectors */
+.form {
+  text-align: center;
+  margin-top: 50px;
+}
+
+/* ID selectors */
+#username:focus,
+#password:focus,
+#isAustralian:focus,
 .card {
   border: 1px solid #ccc;
   border-radius: 10px;

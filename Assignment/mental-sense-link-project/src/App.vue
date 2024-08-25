@@ -1,22 +1,31 @@
 <script setup>
-import { ref } from 'vue'
+import { useStore } from 'vuex'
+import { computed } from 'vue'
+
 import MainHeader from './components/MainHeader.vue'
 import LoginModal from './components/LoginModal.vue'
+import MainFooter from './components/MainFooter.vue'
 
-const showLoginModal = ref(false)
+const store = useStore()
+
+const isLoginModalOpen = computed(() => store.state.isLoginModalOpen)
 </script>
 
 <template>
-  <div class="main-container">
+  <div>
     <header>
-      <MainHeader @open-login-modal="showLoginModal = true" />
+      <MainHeader />
     </header>
-  </div>
 
-  <main class="main-box">
-    <LoginModal :isVisible="showLoginModal" @update:isVisible="showLoginModal = $event" />
-    <router-view></router-view>
-  </main>
+    <main>
+      <LoginModal :isVisible="isLoginModalOpen" />
+      <router-view></router-view>
+    </main>
+
+    <footer>
+      <MainFooter />
+    </footer>
+  </div>
 </template>
 
 <style scoped>

@@ -2,13 +2,18 @@
   <div v-if="isVisible" class="modal-overlay">
     <div class="modal-dialog" role="document">
       <div class="modal-content rounded-4 shadow">
-        <div class="modal-header p-5 pb-4 border-bottom-0">
-          <h1 class="fw-bold mb-0 fs-2">Sign up for free</h1>
+        <div class="modal-header p-5 pb-4 border-bottom-0 modal-grid-detail-container">
+          <h1 class="fw-bold mb-0 fs-2">
+            Log in
+            <h5>Use your account</h5>
+          </h1>
+
           <button
             type="button"
             class="btn-close d-flex justify-content-end"
-            @click="close"
+            @click="closeModal"
             aria-label="Close"
+            style="align-self: flex-start; justify-self: flex-end"
           ></button>
         </div>
 
@@ -37,20 +42,18 @@
               <label for="floatingPassword">Password</label>
             </div>
             <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">
-              Sign up
+              Log in
             </button>
-            <small class="text-body-secondary"
-              >By clicking Sign up, you agree to the terms of use.</small
-            >
+            <small class="text-body-secondary">Don't have an account? Sign up</small>
             <hr class="my-4" />
-            <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
+            <h2 class="fs-5 fw-bold mb-3">Or Log in with</h2>
             <button
               class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3"
               type="button"
-              @click="signUpWithThirdParty('GitHub')"
+              @click="loginWithThirdParty('GitHub')"
             >
               <svg class="bi me-1" width="16" height="16"><use xlink:href="#github" /></svg>
-              Sign up with GitHub
+              Log in with GitHub
             </button>
           </form>
         </div>
@@ -60,16 +63,24 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits } from 'vue'
+import { ref, defineProps } from 'vue'
+import { useStore } from 'vuex'
 
-const props = defineProps({
-  isVisible: Boolean
-})
-
-const emit = defineEmits(['update:isVisible'])
+const store = useStore()
 
 const email = ref('')
 const password = ref('')
+
+const props = defineProps({
+  isVisible: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const closeModal = () => {
+  store.dispatch('closeLoginModal')
+}
 
 const handleSubmit = () => {
   console.log('Email:', email.value)
@@ -77,12 +88,8 @@ const handleSubmit = () => {
   close()
 }
 
-const close = () => {
-  emit('update:isVisible', false)
-}
-
-const signUpWithThirdParty = (provider) => {
-  console.log(`Signing up with ${provider}`)
+const loginWithThirdParty = (provider) => {
+  console.log(`Log in with ${provider}`)
   close()
 }
 </script>
@@ -101,23 +108,9 @@ const signUpWithThirdParty = (provider) => {
 }
 .modal-content {
   background: white;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 10px;
+  border-radius: 10px;
   width: 500px;
-}
-
-.bd-placeholder-img {
-  font-size: 1.125rem;
-  text-anchor: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
-
-@media (min-width: 768px) {
-  .bd-placeholder-img-lg {
-    font-size: 3.5rem;
-  }
 }
 
 .bi {
@@ -125,29 +118,9 @@ const signUpWithThirdParty = (provider) => {
   fill: currentColor;
 }
 
-.nav-scroller {
-  position: relative;
-  z-index: 2;
-  height: 2.75rem;
-  overflow-y: hidden;
-}
-
-.nav-scroller .nav {
-  display: flex;
-  flex-wrap: nowrap;
-  padding-bottom: 1rem;
-  margin-top: -1px;
-  overflow-x: auto;
-  text-align: center;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
-}
-
-.bd-mode-toggle {
-  z-index: 1500;
-}
-
-.bd-mode-toggle .dropdown-menu .active .bi {
-  display: block !important;
+.modal-grid-detail-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
 }
 </style>

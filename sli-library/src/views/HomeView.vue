@@ -97,6 +97,7 @@
               <div v-if="errors.gender" class="text-danger">{{ errors.gender }}</div>
             </div>
           </div>
+
           <div class="mb-3">
             <!-- Reasons for Joining -->
             <label for="reason" class="form-label">Reason For Joining</label>
@@ -118,6 +119,21 @@
               {{ errors.reason }}
             </div>
           </div>
+
+          <div class="mb-3">
+            <!-- Suburb -->
+            <label for="suburb" class="form-label">Suburb</label>
+            <input
+              type="text"
+              class="form-control"
+              id="suburb"
+              @blur="() => validateSuburb(true)"
+              @input="() => validateSuburb(false)"
+              v-model="formData.suburb"
+            />
+            <div v-if="errors.suburb" class="text-danger">{{ errors.suburb }}</div>
+          </div>
+          <!-- Check buttons -->
           <div class="text-center">
             <button type="submit" class="btn btn-primary me-2">Submit</button>
             <button type="button" class="btn btn-secondary" @click="clearForm">Clear</button>
@@ -155,6 +171,7 @@
             </li>
             <li class="list-group-item">Gender: {{ card.gender }}</li>
             <li class="list-group-item">Reason: {{ card.reason }}</li>
+            <li class="list-group-item">Suburb: {{ card.suburb }}</li>
           </ul>
         </div>
       </div>
@@ -175,7 +192,8 @@ const formData = ref({
   confirmPassword: '',
   isAustralian: false,
   reason: '',
-  gender: ''
+  gender: '',
+  suburb: ''
 })
 
 const submittedCards = ref([])
@@ -187,6 +205,7 @@ const submitForm = () => {
   validateConfirmPassword(true)
   validateGender(true)
   validateReason(true)
+  validateSuburb(true)
 
   if (
     !errors.value.username &&
@@ -194,7 +213,8 @@ const submitForm = () => {
     !errors.value.password &&
     !errors.value.confirmPassword &&
     !errors.value.gender &&
-    !errors.value.reason
+    !errors.value.reason &&
+    !errors.value.suburb
   ) {
     if (formData.value.reason === '') {
       formData.value.reason = 'None'
@@ -211,7 +231,8 @@ const columns = [
   { field: 'confirmPassword', header: 'Confirm Password' },
   { field: 'isAustralian', header: 'Australian Resident' },
   { field: 'gender', header: 'Gender' },
-  { field: 'reason', header: 'Reason' }
+  { field: 'reason', header: 'Reason' },
+  { field: 'suburb', header: 'Suburb' }
 ]
 
 const clearForm = () => {
@@ -222,7 +243,8 @@ const clearForm = () => {
     confirmPassword: '',
     isAustralian: false,
     reason: '',
-    gender: ''
+    gender: '',
+    suburb: ''
   }
 
   errors.value = {
@@ -232,7 +254,8 @@ const clearForm = () => {
     confirmPassword: null,
     isAustralian: null,
     reason: null,
-    gender: null
+    gender: null,
+    suburb: null
   }
 }
 
@@ -243,7 +266,8 @@ const errors = ref({
   confirmPassword: null,
   isAustralian: null,
   reason: null,
-  gender: null
+  gender: null,
+  suburb: null
 })
 
 const validateName = (blur) => {
@@ -313,6 +337,14 @@ const validateReason = (blur) => {
     errors.value.reason = 'Great to have a friend'
   } else {
     errors.value.reason = null
+  }
+}
+
+const validateSuburb = (blur) => {
+  if (formData.value.suburb.length > 50) {
+    if (blur) errors.value.suburb = 'Suburb cannot exceed 50 characters long'
+  } else {
+    errors.value.suburb = null
   }
 }
 </script>

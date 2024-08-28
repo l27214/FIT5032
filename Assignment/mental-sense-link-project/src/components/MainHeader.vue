@@ -8,7 +8,7 @@
             href="/"
             class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none"
           >
-            <img alt="Website Logo" class="bi me-2 logo" src="/favicon.ico" />
+            <img alt="Website Logo" class="bi me-2 logo" src="../assets/Logo1.png" />
           </a>
         </div>
 
@@ -86,7 +86,7 @@
                   >Settings</router-link
                 >
                 <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="#">Logout</a></li>
+                <li><a class="dropdown-item" href="#" @click="handleLogout">Logout</a></li>
               </ul>
             </div>
           </div>
@@ -99,7 +99,9 @@
 <script setup>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const store = useStore()
 
 const isAuthenticated = computed(() => store.state.isAuthenticated)
@@ -107,12 +109,17 @@ const isAuthenticated = computed(() => store.state.isAuthenticated)
 const openLoginModal = () => {
   store.dispatch('openLoginModal')
 }
+
+const handleLogout = () => {
+  store.dispatch('cancelAuthorization')
+  router.push('/')
+}
 </script>
 
 <style scoped>
 .logo {
-  width: 30px;
-  height: 30px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
 }
 

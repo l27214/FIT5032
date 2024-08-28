@@ -8,7 +8,7 @@ export default {
     grantAuthorization({ commit }) {
         commit('grantAuthorization', true);
     },
-    canCelAuthorization({ commit }) {
+    cancelAuthorization({ commit }) {
         commit('grantAuthorization', false);
     }
 }

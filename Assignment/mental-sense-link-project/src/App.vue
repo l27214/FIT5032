@@ -5,6 +5,7 @@ import { computed } from 'vue'
 import MainHeader from './components/MainHeader.vue'
 import LoginModal from './components/LoginModal.vue'
 import MainFooter from './components/MainFooter.vue'
+import AdminDashboardView from './views/AdminDashboardView.vue'
 
 const store = useStore()
 
@@ -12,19 +13,27 @@ const isLoginModalOpen = computed(() => store.state.isLoginModalOpen)
 </script>
 
 <template>
-  <div>
-    <header>
-      <MainHeader />
-    </header>
+  <div v-if="!store.state.isAuthenticated">
+    <div>
+      <header>
+        <MainHeader />
+      </header>
+    </div>
 
     <main>
       <LoginModal :isVisible="isLoginModalOpen" />
-      <router-view></router-view>
+      <div>
+        <router-view></router-view>
+      </div>
     </main>
 
     <footer>
       <MainFooter />
     </footer>
+  </div>
+
+  <div v-else>
+    <AdminDashboardView />
   </div>
 </template>
 

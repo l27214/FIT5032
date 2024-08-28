@@ -4,7 +4,7 @@
       <div class="col-md-8 offset-md-2">
         <h1 class="text-center">Library Login Page</h1>
         <p class="text-center">Use your Library Account</p>
-        <form @submit.prevent="submitForm">
+        <form @submit.prevent="submitLoginForm">
           <div class="row mb-3">
             <!-- Username -->
             <div class="col-md-6 col-sm-6 col-lg-8 col-xl-6">
@@ -57,7 +57,7 @@ const formData = ref({
   password: ''
 })
 
-const submitForm = () => {
+const submitLoginForm = () => {
   validateName(true)
   validatePassword(true)
 

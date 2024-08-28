@@ -21,25 +21,29 @@
           <form @submit.prevent="handleSubmit">
             <div class="form-floating mb-3">
               <input
-                v-model="email"
-                type="email"
+                id="floatingEmail"
+                @blur="() => validateEmail(true)"
+                @input="() => validateEmail(false)"
+                v-model="formData.email"
+                type="text"
                 class="form-control rounded-3"
-                id="floatingInput"
                 placeholder="name@example.com"
-                required
               />
-              <label for="floatingInput">Email address</label>
+              <label for="floatingEmail">Email address</label>
+              <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
             </div>
             <div class="form-floating mb-3">
               <input
-                v-model="password"
+                @blur="() => validatePassword(true)"
+                @input="() => validatePassword(false)"
+                v-model="formData.password"
                 type="password"
                 class="form-control rounded-3"
                 id="floatingPassword"
                 placeholder="Password"
-                required
               />
               <label for="floatingPassword">Password</label>
+              <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
             </div>
             <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">
               Log in
@@ -65,11 +69,33 @@
 <script setup>
 import { ref, defineProps } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const store = useStore()
 
-const email = ref('')
-const password = ref('')
+const formData = ref({
+  email: '',
+  password: ''
+})
+
+const clearForm = () => {
+  formData.value = {
+    email: '',
+    password: ''
+  }
+
+  errors.value = {
+    email: null,
+    password: null
+  }
+}
+
+const errors = ref({
+  email: null,
+  password: null
+})
 
 const props = defineProps({
   isVisible: {
@@ -79,18 +105,61 @@ const props = defineProps({
 })
 
 const closeModal = () => {
+  clearForm()
   store.dispatch('closeLoginModal')
+  // router.push('/')
 }
 
 const handleSubmit = () => {
-  console.log('Email:', email.value)
-  console.log('Password:', password.value)
-  close()
+  validateEmail(true)
+  validatePassword(true)
+
+  if (!errors.value.email && !errors.value.password) {
+    if (formData.value.email === 'test' && formData.value.password === 'testtest') {
+      clearForm()
+      alert('Login successful!')
+      store.dispatch('grantAuthorization')
+      closeModal()
+
+      const redirectTo = localStorage.getItem('redirectTo')
+      if (redirectTo == null) {
+        router.push('/')
+      } else {
+        localStorage.removeItem('redirectTo')
+        router.push(redirectTo)
+      }
+    } else if (formData.value.email === 'admin' && formData.value.password === 'admin') {
+      clearForm()
+      alert('Login successful!')
+      store.dispatch('grantAuthorization')
+      closeModal()
+
+      router.push('/admin')
+    } else {
+      alert('Invalid email or password.')
+    }
+  }
 }
 
 const loginWithThirdParty = (provider) => {
   console.log(`Log in with ${provider}`)
   close()
+}
+
+const validateEmail = (blur) => {
+  if (formData.value.email === '') {
+    if (blur) errors.value.email = 'Email is required'
+  } else {
+    errors.value.email = null
+  }
+}
+
+const validatePassword = (blur) => {
+  if (formData.value.password === '') {
+    if (blur) errors.value.password = 'Password is required'
+  } else {
+    errors.value.password = null
+  }
 }
 </script>
 

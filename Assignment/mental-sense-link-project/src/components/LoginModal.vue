@@ -1,17 +1,17 @@
 <template>
-  <div v-if="isVisible" class="modal-overlay">
+  <div class="modal-overlay">
     <div class="modal-dialog" role="document">
       <div class="modal-content rounded-4 shadow">
         <div class="modal-header p-5 pb-4 border-bottom-0 modal-grid-detail-container">
-          <h1 class="fw-bold mb-0 fs-2">
-            Log in
+          <div class="welcomeMessage d-flex justify-content-center align-items-start flex-column">
+            <h1 class="fw-bold mb-3 fs-2">Login</h1>
             <h5>Use your account</h5>
-          </h1>
+          </div>
 
           <button
             type="button"
             class="btn-close d-flex justify-content-end"
-            @click="closeModal"
+            @click="closeOpenModal"
             aria-label="Close"
             style="align-self: flex-start; justify-self: flex-end"
           ></button>
@@ -21,44 +21,34 @@
           <form @submit.prevent="handleSubmit">
             <div class="form-floating mb-3">
               <input
-                id="floatingEmail"
+                id="email"
                 @blur="() => validateEmail(true)"
                 @input="() => validateEmail(false)"
                 v-model="formData.email"
-                type="text"
+                type="email"
                 class="form-control rounded-3"
-                placeholder="name@example.com"
+                placeholder="Email Address"
               />
-              <label for="floatingEmail">Email address</label>
-              <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
+              <label for="email">Email address</label>
+              <div v-show="errors.email" class="text-danger">{{ errors.email }}</div>
             </div>
             <div class="form-floating mb-3">
               <input
+                id="password"
                 @blur="() => validatePassword(true)"
                 @input="() => validatePassword(false)"
                 v-model="formData.password"
                 type="password"
                 class="form-control rounded-3"
-                id="floatingPassword"
                 placeholder="Password"
               />
-              <label for="floatingPassword">Password</label>
+              <label for="password">Password</label>
               <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
             </div>
-            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">
-              Log in
-            </button>
-            <small class="text-body-secondary">Don't have an account? Sign up</small>
-            <hr class="my-4" />
-            <h2 class="fs-5 fw-bold mb-3">Or Log in with</h2>
-            <button
-              class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3"
-              type="button"
-              @click="loginWithThirdParty('GitHub')"
+            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Login</button>
+            <small class="text-body-secondary"
+              >Don't have an account? <a href="#" @click.prevent="goToSignUp">Sign up</a></small
             >
-              <svg class="bi me-1" width="16" height="16"><use xlink:href="#github" /></svg>
-              Log in with GitHub
-            </button>
           </form>
         </div>
       </div>
@@ -67,13 +57,18 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue'
-import { useStore } from 'vuex'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 const router = useRouter()
-
 const store = useStore()
+
+const goToSignUp = () => {
+  store.dispatch('closeLoginModal')
+  store.dispatch('openSignUpModal')
+  closeOpenModal()
+}
 
 const formData = ref({
   email: '',
@@ -97,14 +92,7 @@ const errors = ref({
   password: null
 })
 
-const props = defineProps({
-  isVisible: {
-    type: Boolean,
-    default: false
-  }
-})
-
-const closeModal = () => {
+const closeOpenModal = () => {
   clearForm()
   store.dispatch('closeLoginModal')
   // router.push('/')
@@ -115,11 +103,16 @@ const handleSubmit = () => {
   validatePassword(true)
 
   if (!errors.value.email && !errors.value.password) {
-    if (formData.value.email === 'test' && formData.value.password === 'testtest') {
-      clearForm()
+    const userData = JSON.parse(localStorage.getItem('userData'))
+
+    const matchedUser = userData.find(
+      (user) => user.email === formData.value.email && user.password === formData.value.password
+    )
+    if (matchedUser) {
+      localStorage.setItem('userInfo', JSON.stringify(matchedUser))
       alert('Login successful!')
       store.dispatch('grantAuthorization')
-      closeModal()
+      closeOpenModal()
 
       const redirectTo = localStorage.getItem('redirectTo')
       if (redirectTo == null) {
@@ -128,22 +121,10 @@ const handleSubmit = () => {
         localStorage.removeItem('redirectTo')
         router.push(redirectTo)
       }
-    } else if (formData.value.email === 'admin' && formData.value.password === 'admin') {
-      clearForm()
-      alert('Login successful!')
-      store.dispatch('grantAuthorization')
-      closeModal()
-
-      router.push('/admin')
     } else {
       alert('Invalid email or password.')
     }
   }
-}
-
-const loginWithThirdParty = (provider) => {
-  console.log(`Log in with ${provider}`)
-  close()
 }
 
 const validateEmail = (blur) => {
@@ -174,22 +155,18 @@ const validatePassword = (blur) => {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 999;
 }
+
 .modal-content {
   background: white;
-  padding: 10px;
   border-radius: 10px;
   width: 500px;
 }
 
-.bi {
-  vertical-align: -0.125em;
-  fill: currentColor;
-}
-
 .modal-grid-detail-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 4fr 1fr;
   justify-content: center;
 }
 </style>

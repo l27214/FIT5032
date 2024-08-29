@@ -29,9 +29,7 @@ const routes = [
     path: '/community',
     name: 'Community',
     component: CommunityView,
-    meta: {
-      requiresAuth: true
-    }
+    meta: { requiresAuth: true }
   },
   {
     path: '/about',
@@ -63,6 +61,7 @@ router.beforeEach((to, from, next) => {
       localStorage.setItem('redirectTo', to.fullPath);
       store.dispatch('openLoginModal')
     } else {
+      // ???
       localStorage.setItem('redirectTo', from.fullPath);
       next(from.fullPath);
     }

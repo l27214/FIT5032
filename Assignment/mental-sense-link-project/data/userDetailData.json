@@ -1,0 +1,143 @@
+[
+  {
+    "userID": 0,
+    "displayName": "admin",
+    "loginEmail": "admin@monash.edu",
+    "age": null,
+    "gender": null,
+    "city": null,
+    "occupation": null,
+    "education": null
+  },
+  {
+    "userID": 0,
+    "displayName": "test",
+    "loginEmail": "test@monash.edu",
+    "age": null,
+    "gender": null,
+    "city": null,
+    "occupation": null,
+    "education": null
+  },
+  {
+    "userID": 2,
+    "displayName": "Jane Smith",
+    "loginEmail": "janesmith@gmail.com",
+    "age": 32,
+    "gender": "Female",
+    "city": "Melbourne",
+    "occupation": "Teacher",
+    "education": "Master"
+  },
+  {
+    "userID": 3,
+    "displayName": "John Doe",
+    "loginEmail": "johndoe@example.com",
+    "age": 25,
+    "gender": "Male",
+    "city": "Sydney",
+    "occupation": "Programmer",
+    "education": "Bachelor"
+  },
+
+  {
+    "userID": 4,
+    "displayName": "Emily Johnson",
+    "loginEmail": "emilyj@outlook.com",
+    "age": 29,
+    "gender": "Female",
+    "city": "Brisbane",
+    "occupation": "Graphic Designer",
+    "education": "Bachelor"
+  },
+  {
+    "userID": 5,
+    "displayName": "Michael Brown",
+    "loginEmail": "michaelbrown@gmail.com",
+    "age": 35,
+    "gender": "Male",
+    "city": "Adelaide",
+    "occupation": "Sales Manager",
+    "education": "Bachelor"
+  },
+  {
+    "userID": 6,
+    "displayName": "Sophie Turner",
+    "loginEmail": "sophie.t@live.com",
+    "age": 28,
+    "gender": "Female",
+    "city": "Perth",
+    "occupation": "Nurse",
+    "education": "Diploma"
+  },
+  {
+    "userID": 7,
+    "displayName": "William Harris",
+    "loginEmail": "willharris@yahoo.com",
+    "age": 42,
+    "gender": "Male",
+    "city": "Canberra",
+    "occupation": "Engineer",
+    "education": "Master"
+  },
+  {
+    "userID": 8,
+    "displayName": "Olivia Clark",
+    "loginEmail": "oliviac@example.com",
+    "age": 31,
+    "gender": "Female",
+    "city": "Gold Coast",
+    "occupation": "Marketing Specialist",
+    "education": "Bachelor"
+  },
+  {
+    "userID": 9,
+    "displayName": "James Wilson",
+    "loginEmail": "james.w@gmail.com",
+    "age": 38,
+    "gender": "Male",
+    "city": "Hobart",
+    "occupation": "Photographer",
+    "education": "Diploma"
+  },
+  {
+    "userID": 10,
+    "displayName": "Chloe Martin",
+    "loginEmail": "chloem@outlook.com",
+    "age": 26,
+    "gender": "Female",
+    "city": "Darwin",
+    "occupation": "Content Writer",
+    "education": "Bachelor"
+  },
+  {
+    "userID": 11,
+    "displayName": "Benjamin Lee",
+    "loginEmail": "benlee@example.com",
+    "age": 34,
+    "gender": "Male",
+    "city": "Melbourne",
+    "occupation": "Accountant",
+    "education": "Master"
+  },
+  {
+    "userID": 12,
+    "displayName": "Grace Evans",
+    "loginEmail": "grace.evans@gmail.com",
+    "age": 24,
+    "gender": "Female",
+    "city": "Sydney",
+    "occupation": "Customer Service Representative",
+    "education": "Diploma"
+  },
+  {
+    "userID": 13,
+    "displayName": "Liam Davis",
+    "loginEmail": "liamd@example.com",
+    "age": 30,
+    "gender": "Male",
+    "city": "Perth",
+    "occupation": "Fitness Trainer",
+    "education": "Certificate"
+  }
+]

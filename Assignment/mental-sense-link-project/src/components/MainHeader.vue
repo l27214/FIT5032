@@ -86,7 +86,7 @@
                   >Settings</router-link
                 >
                 <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="#" @click="handleLogout">Logout</a></li>
+                <li><a class="dropdown-item" href="#" @click.prevent="handleLogout">Logout</a></li>
               </ul>
             </div>
           </div>

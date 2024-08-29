@@ -4,16 +4,19 @@ import { computed } from 'vue'
 
 import MainHeader from './components/MainHeader.vue'
 import LoginModal from './components/LoginModal.vue'
+import SignUpModal from './components/SignUpModal.vue'
 import MainFooter from './components/MainFooter.vue'
 import AdminDashboardView from './views/AdminDashboardView.vue'
 
 const store = useStore()
 
 const isLoginModalOpen = computed(() => store.state.isLoginModalOpen)
+const isSignUpModalOpen = computed(() => store.state.isSignUpModalOpen)
+const userEmail = computed(() => localStorage.getItem('userInfo').email)
 </script>
 
 <template>
-  <div v-if="!store.state.isAuthenticated">
+  <div v-if="userEmail !== 'admin@monash.edu'">
     <div>
       <header>
         <MainHeader />
@@ -21,7 +24,12 @@ const isLoginModalOpen = computed(() => store.state.isLoginModalOpen)
     </div>
 
     <main>
-      <LoginModal :isVisible="isLoginModalOpen" />
+      <div v-if="isLoginModalOpen">
+        <LoginModal />
+      </div>
+      <div v-else-if="isSignUpModalOpen">
+        <SignUpModal />
+      </div>
       <div>
         <router-view></router-view>
       </div>

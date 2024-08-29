@@ -1,4 +1,5 @@
 export default {
     isLoginModalOpen: false,
-    isAuthenticated: false
+    isSignUpModalOpen: false,
+    isAuthenticated: false,
 }

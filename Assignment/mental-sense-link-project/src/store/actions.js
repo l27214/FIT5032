@@ -13,11 +13,11 @@ export default {
     closeSignUpModal({ commit }) {
         commit('toggleSignUpModal', false);
     },
-    // Handle Authorization Function
-    grantAuthorization({ commit }) {
-        commit('grantAuthorization', true);
+    // Handle User Information
+    updateUser({ commit }, user) {
+        commit('setUser', user);
     },
-    cancelAuthorization({ commit }) {
-        commit('grantAuthorization', false);
-    },
+    logout({ commit }) {
+        commit('clearUser');
+    }
 }

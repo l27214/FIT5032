@@ -45,10 +45,16 @@
               <label for="password">Password</label>
               <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
             </div>
+            <div class="d-flex align-items-center justify-content-end mb-3 mt-0">
+              <small class="text-body-secondary"><a href="#">Forgot your password?</a></small>
+            </div>
+
             <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Login</button>
-            <small class="text-body-secondary"
-              >Don't have an account? <a href="#" @click.prevent="goToSignUp">Sign up</a></small
-            >
+            <div class="d-flex justify-content-center mt-2">
+              <small class="text-body-secondary"
+                >Don't have an account? <a href="#" @click.prevent="goToSignUp">Sign up</a></small
+              >
+            </div>
           </form>
         </div>
       </div>
@@ -109,14 +115,15 @@ const handleSubmit = () => {
       (user) => user.email === formData.value.email && user.password === formData.value.password
     )
     if (matchedUser) {
-      localStorage.setItem('userInfo', JSON.stringify(matchedUser))
+      store.dispatch('updateUser', matchedUser)
       alert('Login successful!')
-      store.dispatch('grantAuthorization')
       closeOpenModal()
 
       const redirectTo = localStorage.getItem('redirectTo')
       if (redirectTo == null) {
-        router.push('/')
+        if (matchedUser.email == 'admin@monash.edu') {
+          router.push('/admin/dashboard')
+        } else router.push('/')
       } else {
         localStorage.removeItem('redirectTo')
         router.push(redirectTo)

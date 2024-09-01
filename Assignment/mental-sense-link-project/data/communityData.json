@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "posterUsername": "Clyde Stanley",
+    "posterAvatar": "https://bootdey.com/img/Content/avatar/avatar6.png",
+    "postDate": "March 16",
+    "content": "Best vacation of 2023",
+    "type": "video",
+    "src": "https://cdn.pixabay.com/video/2024/07/27/223461_small.mp4",
+    "likeCount": 14,
+    "commentCount": 3,
+    "shareCount": 16
+  },
+  {
+    "id": 2,
+    "posterUsername": "Alice Johnson",
+    "posterAvatar": "https://bootdey.com/img/Content/avatar/avatar7.png",
+    "postDate": "May 5",
+    "content": "Business Trip",
+    "type": "image",
+    "src": "https://cdn.pixabay.com/photo/2020/08/21/15/37/building-5506466_1280.jpg",
+    "likeCount": 23,
+    "commentCount": 6,
+    "shareCount": 10
+  }
+]

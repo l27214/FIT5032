@@ -6,22 +6,20 @@ import MainHeader from './components/MainHeader.vue'
 import LoginModal from './components/LoginModal.vue'
 import SignUpModal from './components/SignUpModal.vue'
 import MainFooter from './components/MainFooter.vue'
-import AdminDashboardView from './views/AdminDashboardView.vue'
 
 const store = useStore()
 
 const isLoginModalOpen = computed(() => store.state.isLoginModalOpen)
 const isSignUpModalOpen = computed(() => store.state.isSignUpModalOpen)
-const userEmail = computed(() => localStorage.getItem('userInfo').email)
+const userEmail = computed(() => store.state.user?.email)
 </script>
 
 <template>
-  <div v-if="userEmail !== 'admin@monash.edu'">
-    <div>
-      <header>
-        <MainHeader />
-      </header>
-    </div>
+  <!-- User View -->
+  <div v-if="!userEmail || userEmail !== 'admin@monash.edu'">
+    <header>
+      <MainHeader />
+    </header>
 
     <main>
       <div v-if="isLoginModalOpen">
@@ -40,8 +38,11 @@ const userEmail = computed(() => localStorage.getItem('userInfo').email)
     </footer>
   </div>
 
+  <!-- Admin View -->
   <div v-else>
-    <AdminDashboardView />
+    <main>
+      <router-view></router-view>
+    </main>
   </div>
 </template>
 

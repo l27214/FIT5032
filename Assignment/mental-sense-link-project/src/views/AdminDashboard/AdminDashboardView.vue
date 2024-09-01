@@ -1,27 +1,5 @@
 <template>
   <div>
-    <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="light">
-      <a class="navbar-brand col-md-3 col-lg-3 col-xxl-2 me-0 px-3 fs-6 text-white" href="#"
-        >Mental Sense Link</a
-      >
-
-      <ul class="navbar-nav flex-row d-md-none">
-        <li class="nav-item text-nowrap">
-          <button
-            class="nav-link px-3 text-white"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#sidebarMenu"
-            aria-controls="sidebarMenu"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <i class="pi pi-bars"></i>
-          </button>
-        </li>
-      </ul>
-    </header>
-
     <div class="container-fluid">
       <div class="row">
         <div
@@ -33,17 +11,16 @@
             id="sidebarMenu"
             aria-labelledby="sidebarMenuLabel"
           >
-            <div class="offcanvas-header">
-              <h5 class="offcanvas-title" id="sidebarMenuLabel">Company name</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="offcanvas"
-                data-bs-target="#sidebarMenu"
-                aria-label="Close"
-              ></button>
-            </div>
             <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+              <a class="navbar-brand me-0 px-3 mb-3" href="#">
+                <img
+                  alt="Website Logo"
+                  class="bi"
+                  src="../../assets/Logo.png"
+                  width="80%"
+                  height="80%"
+                />
+              </a>
               <ul class="nav flex-column">
                 <li class="nav-item">
                   <a
@@ -57,20 +34,20 @@
                 </li>
                 <li class="nav-item">
                   <a class="nav-link d-flex align-items-center gap-2" href="#">
-                    <i class="pi pi-shopping-cart" />
-                    Products
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link d-flex align-items-center gap-2" href="#">
                     <i class="pi pi-users" />
-                    Customers
+                    User Management
                   </a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link d-flex align-items-center gap-2" href="#">
-                    <i class="pi pi-chart-line" />
-                    Reports
+                    <i class="pi pi-th-large" />
+                    Role Management
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link d-flex align-items-center gap-2" href="#">
+                    <i class="pi pi-database" />
+                    Content Management
                   </a>
                 </li>
               </ul>
@@ -129,8 +106,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const store = useStore()
 const handleLogout = () => {
-  store.dispatch('cancelAuthorization')
-  store.dispatch('clearUserEmail')
+  store.dispatch('logout')
   router.push('/')
 }
 </script>
@@ -140,27 +116,15 @@ const handleLogout = () => {
 .sidebar .nav-link {
   font-size: 1.1rem;
   font-weight: 500;
-  margin: 10px 20px;
+  margin: 15px 10px;
 }
 
 .fixed-sidebar {
   position: fixed;
-  top: 30px;
+  top: 0px;
   bottom: 0;
   left: 0;
   z-index: 1000;
-}
-
-/* Navbar */
-.navbar-brand {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.25);
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
-}
-
-.navbar .form-control {
-  padding: 0.75rem 1rem;
 }
 
 .main-content {

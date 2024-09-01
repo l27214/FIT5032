@@ -5,7 +5,12 @@ export default {
     toggleSignUpModal(state, payload) {
         state.isSignUpModalOpen = payload;
     },
-    grantAuthorization(state, authorizationState) {
-        state.isAuthenticated = authorizationState;
+    setUser(state, user) {
+        state.user = user;
+        sessionStorage.setItem('loginUserInfo', JSON.stringify(user));
     },
+    clearUser(state) {
+        state.user = null;
+        sessionStorage.removeItem('loginUserInfo');
+    }
 }

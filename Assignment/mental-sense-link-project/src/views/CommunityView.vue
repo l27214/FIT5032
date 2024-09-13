@@ -85,6 +85,8 @@
   <br />
 </template>
 
+<!-- Need to show more posts in this page, and have ... at the page end for Content Exploration -->
+
 <script setup>
 import { ref } from 'vue'
 import posts from '../../data/communityData.json'

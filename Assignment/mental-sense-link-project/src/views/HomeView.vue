@@ -84,6 +84,8 @@
       <div class="d-flex justify-content-center align-items-center mb-4">
         <div class="text-center">
           <h2 class="pb-2">Hi, {{ userName }}. How do you feel today?</h2>
+          <!-- <h2 class="pb-2">Hi, <span v-html="userName"></span>. How do you feel today?</h2> -->
+
           <form class="mb-6" @submit.prevent="">
             <div>
               <img

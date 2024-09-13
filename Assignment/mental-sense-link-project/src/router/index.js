@@ -99,6 +99,17 @@ router.beforeEach((to, from, next) => {
 });
 
 
+// Use afterEach to get rid of use localStorage to store redirectTo.
+// let redirectTo = null;
+// store.state.redirectTo
+// router.afterEach(() => {
+
+//   if (isAuthenticated.value && redirectTo) {
+//     const target = redirectTo;
+//     redirectTo = null;
+//     router.push(target);
+//   }
+// });
 
 
 

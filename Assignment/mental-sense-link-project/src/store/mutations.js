@@ -1,16 +1,22 @@
 export default {
+    // Handle login modal state
     toggleLoginModal(state, payload) {
         state.isLoginModalOpen = payload;
     },
+    // Handle Signup modal state
     toggleSignUpModal(state, payload) {
         state.isSignUpModalOpen = payload;
     },
-    setUser(state, user) {
-        state.user = user;
-        sessionStorage.setItem('loginUserInfo', JSON.stringify(user));
+    // Handle Redirect Path
+    updateRedirectPath(state, payload) {
+        state.redirectPath = payload;
     },
-    clearUser(state) {
-        state.user = null;
-        sessionStorage.removeItem('loginUserInfo');
+    // Handle Toast Configure
+    updateToastConfig(state, payload) {
+        state.toastConfig = payload;
+    },
+    // Handle Confirm Configure
+    updateConfirmConfig(state, payload) {
+        state.confirmConfig = payload;
     }
 }

@@ -6,6 +6,7 @@ export default {
     closeLoginModal({ commit }) {
         commit('toggleLoginModal', false);
     },
+
     // Handle Signup Modal
     openSignUpModal({ commit }) {
         commit('toggleSignUpModal', true);
@@ -13,11 +14,19 @@ export default {
     closeSignUpModal({ commit }) {
         commit('toggleSignUpModal', false);
     },
-    // Handle User Information
-    updateUser({ commit }, user) {
-        commit('setUser', user);
+
+    // Handle Redirect Path
+    setRedirectPath({ commit }, path) {
+        commit('updateRedirectPath', path);
     },
-    logout({ commit }) {
-        commit('clearUser');
-    }
+
+    // Handle Toast Configuration
+    setTriggerToast({ commit }, toastConfig) {
+        commit('updateToastConfig', toastConfig);
+    },
+
+    // Handle Confirm Configuration
+    setTriggerConfirm({ commit }, confirmConfig) {
+        commit('updateConfirmConfig', confirmConfig);
+    },
 }

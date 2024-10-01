@@ -1,5 +1,14 @@
 export default {
+    // Login or Sign up Model Open State
     isLoginModalOpen: false,
     isSignUpModalOpen: false,
-    user: JSON.parse(sessionStorage.getItem('loginUserInfo')) || null,
+
+    // Redirect path
+    redirectPath: null,
+
+    // Toast Configure
+    toastConfig: null,
+
+    // Confirm Configure
+    confirmConfig: null,
 }

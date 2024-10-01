@@ -4,13 +4,7 @@
       <!-- Website Logo -->
       <div class="col-2">
         <a href="/">
-          <img
-            alt="Website Logo"
-            class="bi me-2"
-            src="../assets/Logo.png"
-            width="90%"
-            height="90%"
-          />
+          <img src="@/assets/icons/Logo.png" alt="Website Logo" width="90%" height="90%" />
         </a>
       </div>
 
@@ -97,22 +91,36 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 
 const router = useRouter()
 const store = useStore()
 
-const isAuthenticated = computed(() => !!store.state.user)
+const isAuthenticated = ref(false)
 
 const openLoginModal = () => {
   store.dispatch('openLoginModal')
 }
 
+let auth
+onMounted(() => {
+  auth = getAuth()
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      isAuthenticated.value = true
+    } else {
+      isAuthenticated.value = false
+    }
+  })
+})
+
 const handleLogout = () => {
-  store.dispatch('logout')
-  router.push('/')
+  signOut(auth).then(() => {
+    router.push('/')
+  })
 }
 </script>
 

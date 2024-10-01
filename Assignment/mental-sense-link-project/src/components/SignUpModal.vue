@@ -10,7 +10,7 @@
 
           <button
             type="button"
-            class="btn-close d-flex justify-content-end"
+            class="btn-close"
             @click="closeModal"
             aria-label="Close"
             style="align-self: flex-start; justify-self: flex-end"
@@ -18,7 +18,7 @@
         </div>
 
         <div class="modal-body p-5 pt-0">
-          <form @submit.prevent="handleSubmit">
+          <form @submit.prevent="handleRegister">
             <!-- Display Name -->
             <div class="form-floating mb-3">
               <input
@@ -85,6 +85,10 @@
               </div>
             </div>
 
+            <div v-if="signUpErrors.firebaseAuthError" class="text-danger">
+              {{ signUpErrors.firebaseAuthError }}
+            </div>
+
             <!-- Sign Up button -->
             <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">
               Create my Account
@@ -94,6 +98,11 @@
               >Already have an account? <a href="#" @click.prevent="goToLogin">Login</a></small
             >
           </form>
+          <hr class="my-4" />
+          <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
+          <a href="https://www.google.com" class="d-flex justify-content-center">
+            <img src="@/assets/icons/IconGoogleSignUp.svg" alt="Google Sign-in Icon"
+          /></a>
         </div>
       </div>
     </div>
@@ -103,12 +112,18 @@
 <script setup>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 
 const store = useStore()
+const auth = getAuth()
 
-const goToLogin = () => {
+const closeModal = () => {
   clearForm()
   store.dispatch('closeSignUpModal')
+}
+
+const goToLogin = () => {
+  closeModal()
   store.dispatch('openLoginModal')
 }
 
@@ -123,7 +138,8 @@ const signUpErrors = ref({
   displayName: null,
   email: null,
   password: null,
-  confirmPassword: null
+  confirmPassword: null,
+  firebaseAuthError: null
 })
 
 const clearForm = () => {
@@ -138,13 +154,9 @@ const clearForm = () => {
     displayName: null,
     email: null,
     password: null,
-    confirmPassword: null
+    confirmPassword: null,
+    firebaseAuthError: null
   }
-}
-
-const closeModal = () => {
-  clearForm()
-  store.dispatch('closeSignUpModal')
 }
 
 const validateDisplayName = (blur) => {
@@ -203,7 +215,7 @@ const validateConfirmPassword = (blur) => {
   }
 }
 
-const handleSubmit = () => {
+const handleRegister = () => {
   validateDisplayName(true)
   validateEmail(true)
   validatePassword(true)
@@ -215,17 +227,41 @@ const handleSubmit = () => {
     !signUpErrors.value.password &&
     !signUpErrors.value.confirmPassword
   ) {
-    const userData = JSON.parse(localStorage.getItem('userData') || '[]')
-    const emailExists = userData.find((user) => user.email === signUpFormData.value.email)
-    if (!emailExists) {
-      userData.push(signUpFormData.value)
-      localStorage.setItem('userData', JSON.stringify(userData))
-      clearForm()
-      store.dispatch('closeSignUpModal')
-      store.dispatch('openLoginModal')
-    } else {
-      signUpErrors.value.email = 'Email already exist'
-    }
+    createUserWithEmailAndPassword(auth, signUpFormData.value.email, signUpFormData.value.password)
+      .then((userCredential) => {
+        const user = userCredential.user
+        console.log('Firebase Register Successful!')
+        console.log(user)
+
+        // TODO: Add user to Firestore database
+
+        clearForm()
+        store.dispatch('closeSignUpModal')
+        store.dispatch('openLoginModal')
+      })
+      .catch((error) => {
+        console.log(error.code)
+        switch (error.code) {
+          case 'auth/invalid-email':
+            signUpErrors.value.firebaseAuthError = 'Invalid email format'
+            break
+          case 'auth/weak-password':
+            signUpErrors.value.firebaseAuthError = 'Password is too weak'
+            break
+          case 'auth/email-already-in-use':
+            signUpErrors.value.firebaseAuthError = 'Email is already registered'
+            break
+          case 'auth/too-many-requests':
+            signUpErrors.value.firebaseAuthError = 'Too many attempts, please try again later'
+            break
+          case 'auth/timeout':
+            signUpErrors.value.firebaseAuthError = 'Request timed out, please try again'
+            break
+          default:
+            signUpErrors.value.firebaseAuthError =
+              'Failed to create account. Please try again later'
+        }
+      })
   }
 }
 </script>

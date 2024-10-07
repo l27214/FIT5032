@@ -198,7 +198,7 @@
         </div>
       </div>
 
-      <hr class="featurette-divider" />
+      <hr class="my-5" />
 
       <div class="row featurette">
         <div class="col-md-7">
@@ -225,7 +225,7 @@
         </div>
       </div>
 
-      <hr class="featurette-divider" />
+      <hr class="my-5" />
 
       <div class="row featurette">
         <div class="col-md-7 order-md-2">
@@ -251,46 +251,11 @@
           </svg>
         </div>
       </div>
-
-      <hr class="featurette-divider" />
-
-      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading fw-normal lh-1">Mental Health Knowledge</h2>
-          <p class="lead">
-            Learn about mental health knowledge to better care for yourself and others.
-          </p>
-        </div>
-        <div class="col-md-5">
-          <svg
-            class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
-            width="500"
-            height="500"
-            xmlns="http://www.w3.org/2000/svg"
-            role="img"
-            aria-label="Placeholder: 500x500"
-            preserveAspectRatio="xMidYMid slice"
-            focusable="false"
-          >
-            <title>Placeholder</title>
-            <rect width="100%" height="100%" fill="var(--bs-secondary-bg)" />
-            <text x="50%" y="50%" fill="var(--bs-secondary-color)" dy=".3em">500x500</text>
-          </svg>
-        </div>
-      </div>
-
-      <hr class="featurette-divider" />
     </div>
   </div>
 </template>
 
-<script setup>
-import { computed } from 'vue'
-import store from '@/store'
-
-const isAuthenticated = computed(() => !!store.state.user)
-const userName = computed(() => store.state.user?.displayName ?? '')
-</script>
+<script setup></script>
 
 <style scoped>
 .bd-placeholder-img {
@@ -331,13 +296,6 @@ const userName = computed(() => store.state.user?.displayName ?? '')
 .marketing .col-lg-4 p {
   margin-right: 0.75rem;
   margin-left: 0.75rem;
-}
-
-/* Featurettes
-------------------------- */
-
-.featurette-divider {
-  margin: 5rem 0; /* Space out the Bootstrap <hr> more */
 }
 
 /* Thin out the marketing headings */

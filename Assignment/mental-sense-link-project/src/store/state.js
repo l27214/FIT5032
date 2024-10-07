@@ -3,6 +3,9 @@ export default {
     isLoginModalOpen: false,
     isSignUpModalOpen: false,
 
+    // Forgot Password Model Open State
+    isForgotPasswordModalOpen: false,
+
     // Redirect path
     redirectPath: null,
 

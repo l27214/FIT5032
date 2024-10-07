@@ -15,6 +15,14 @@ export default {
         commit('toggleSignUpModal', false);
     },
 
+    // Handle Forgot Password Modal
+    openForgotPasswordModal({ commit }) {
+        commit('toggleForgotPasswordModal', true);
+    },
+    closeForgotPasswordModal({ commit }) {
+        commit('toggleForgotPasswordModal', false);
+    },
+
     // Handle Redirect Path
     setRedirectPath({ commit }, path) {
         commit('updateRedirectPath', path);

@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from 'vuex'
-import { computed, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
@@ -9,9 +9,13 @@ import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
 
 import MainHeader from './components/MainHeader.vue'
-import LoginModal from './components/LoginModal.vue'
-import SignUpModal from './components/SignUpModal.vue'
+import LoginModal from './components/Authentication/LoginModal.vue'
+import SignUpModal from './components/Authentication/SignUpModal.vue'
+import ForgotPasswordModal from './components/Authentication/ForgotPasswordModal.vue'
 import MainFooter from './components/MainFooter.vue'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import AdminSideBar from './components/AdminHeader.vue'
+import LoadingSpinner from './components/LoadingSpinner.vue'
 
 const store = useStore()
 const toast = useToast()
@@ -19,7 +23,9 @@ const confirm = useConfirm()
 
 const isLoginModalOpen = computed(() => store.state.isLoginModalOpen)
 const isSignUpModalOpen = computed(() => store.state.isSignUpModalOpen)
-const userEmail = computed(() => store.state.user?.email)
+const isForgotPasswordModalOpen = computed(() => store.state.isForgotPasswordModalOpen)
+const userEmail = ref(null)
+const loading = ref(true)
 
 watch(
   () => store.state.toastConfig,
@@ -38,10 +44,48 @@ watch(
     }
   }
 )
+
+const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const removeLinstener = onAuthStateChanged(
+      getAuth(),
+      (user) => {
+        removeLinstener()
+        resolve(user)
+      },
+      reject
+    )
+  })
+}
+
+onMounted(async () => {
+  const user = await getCurrentUser()
+  loading.value = false
+
+  if (user) {
+    userEmail.value = user.email
+  } else {
+    userEmail.value = null
+  }
+
+  const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
+    if (user) {
+      userEmail.value = user.email
+    } else {
+      userEmail.value = null
+    }
+  })
+
+  return () => {
+    unsubscribe()
+  }
+})
 </script>
 
 <template>
   <div style="width: calc(100vw - 15px)">
+    <LoadingSpinner :isLoading="loading" />
+
     <Toast />
     <ConfirmDialog />
 
@@ -52,11 +96,14 @@ watch(
       </header>
 
       <main>
-        <div v-if="isLoginModalOpen">
+        <div v-show="isLoginModalOpen">
           <LoginModal />
         </div>
-        <div v-else-if="isSignUpModalOpen">
+        <div v-show="isSignUpModalOpen">
           <SignUpModal />
+        </div>
+        <div v-show="isForgotPasswordModalOpen">
+          <ForgotPasswordModal />
         </div>
         <div>
           <router-view></router-view>
@@ -70,6 +117,9 @@ watch(
 
     <!-- Admin View -->
     <div v-else>
+      <header>
+        <AdminSideBar />
+      </header>
       <main>
         <router-view></router-view>
       </main>
@@ -77,22 +127,10 @@ watch(
   </div>
 </template>
 
-<style scoped>
-/* header {
-  position: fixed;
-  top: 0px;
-  width: 100%;
-  background-color: white;
-  z-index: 100;
-}
+<style scoped></style>
 
-@media (min-width: 1024px) {
-  header {
-    position: fixed;
-    top: 0px;
-    width: 100%;
-    background-color: white;
-    z-index: 100;
-  }
-} */
+<style>
+.hidden-confrim-btn {
+  display: none !important;
+}
 </style>

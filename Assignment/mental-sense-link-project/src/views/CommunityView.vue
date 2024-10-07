@@ -1,5 +1,5 @@
 <template>
-  <div class="container profile">
+  <div class="container profile pt-3">
     <div class="row">
       <div class="col-md-6" v-for="post in data.posts" :key="post.id">
         <div class="card mb-3">

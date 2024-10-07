@@ -1,9 +1,9 @@
 <template>
-  <div class="modal-overlay">
+  <div class="modal-overlay" role="dialog" aria-modal="true">
     <div class="modal-dialog" role="document">
-      <div class="modal-content rounded-4 shadow">
-        <div class="modal-header p-5 pb-4 border-bottom-0 modal-grid-detail-container">
-          <div class="welcomeMessage d-flex justify-content-center align-items-start flex-column">
+      <div class="modal-content bg-light rounded-4 shadow">
+        <div class="modal-header d-flex justify-content-between align-items-start p-5 pb-4">
+          <div class="d-flex justify-content-center align-items-start flex-column">
             <h1 class="fw-bold mb-3 fs-2">Sign Up</h1>
             <h5>Create your account</h5>
           </div>
@@ -12,21 +12,21 @@
             type="button"
             class="btn-close"
             @click="closeModal"
-            aria-label="Close"
-            style="align-self: flex-start; justify-self: flex-end"
+            aria-label="Close modal"
           ></button>
         </div>
 
         <div class="modal-body p-5 pt-0">
           <form @submit.prevent="handleRegister">
             <!-- Display Name -->
-            <div class="form-floating mb-3">
+            <div class="form-floating mb-2">
               <input
                 id="displayName"
                 type="text"
-                class="form-control rounded-3"
-                placeholder="Display Name"
                 v-model="signUpFormData.displayName"
+                placeholder="Display Name"
+                class="form-control rounded-3"
+                aria-required="true"
                 @blur="() => validateDisplayName(true)"
                 @input="() => validateDisplayName(false)"
               />
@@ -37,32 +37,34 @@
             </div>
 
             <!-- Email Address -->
-            <div class="form-floating mb-3">
+            <div class="form-floating mb-2">
               <input
                 id="email"
                 type="email"
-                class="form-control rounded-3"
-                placeholder="Email Address"
                 v-model="signUpFormData.email"
+                placeholder="Email Address"
+                class="form-control rounded-3"
+                aria-required="true"
                 @blur="() => validateEmail(true)"
                 @input="() => validateEmail(false)"
               />
-              <label for="email" class="form-label">Email address</label>
+              <label for="email">Email address</label>
               <div v-if="signUpErrors.email" class="text-danger">{{ signUpErrors.email }}</div>
             </div>
 
             <!-- Password -->
-            <div class="form-floating mb-3">
+            <div class="form-floating mb-2">
               <input
                 id="password"
                 type="password"
-                class="form-control rounded-3"
-                placeholder="Password"
                 v-model="signUpFormData.password"
+                placeholder="Password"
+                class="form-control rounded-3"
+                aria-required="true"
                 @blur="() => validatePassword(true)"
                 @input="() => validatePassword(false)"
               />
-              <label for="password" class="form-label">Password</label>
+              <label for="password">Password</label>
               <div v-if="signUpErrors.password" class="text-danger">
                 {{ signUpErrors.password }}
               </div>
@@ -73,11 +75,12 @@
               <input
                 id="confirmPassword"
                 type="password"
-                class="form-control rounded-3"
+                v-model="signUpFormData.confirmPassword"
                 placeholder="Confirm Password"
+                class="form-control rounded-3"
+                aria-required="true"
                 @blur="() => validateConfirmPassword(true)"
                 @input="() => validateConfirmPassword(false)"
-                v-model="signUpFormData.confirmPassword"
               />
               <label for="confirmPassword">Confirm Password</label>
               <div v-if="signUpErrors.confirmPassword" class="text-danger">
@@ -85,24 +88,30 @@
               </div>
             </div>
 
-            <div v-if="signUpErrors.firebaseAuthError" class="text-danger">
-              {{ signUpErrors.firebaseAuthError }}
-            </div>
-
             <!-- Sign Up button -->
-            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">
+            <button class="w-100 mt-3 mb-2 btn btn-primary btn-lg rounded-3" type="submit">
               Create my Account
             </button>
+          </form>
 
+          <div v-if="signUpErrors.firebaseAuthError" class="alert alert-danger" role="alert">
+            {{ signUpErrors.firebaseAuthError }}
+          </div>
+
+          <div class="d-flex justify-content-center pt-2">
             <small class="text-body-secondary"
               >Already have an account? <a href="#" @click.prevent="goToLogin">Login</a></small
             >
-          </form>
-          <hr class="my-4" />
-          <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
-          <a href="https://www.google.com" class="d-flex justify-content-center">
-            <img src="@/assets/icons/IconGoogleSignUp.svg" alt="Google Sign-in Icon"
-          /></a>
+          </div>
+
+          <hr class="my-3" />
+          <h2 class="fs-5 fw-bold mb-3">Or use third-party</h2>
+          <img
+            src="@/assets/icons/IconGoogleSignUp.svg"
+            alt="Google Sign-up Icon"
+            role="button"
+            @click="signUpWithGoogle"
+          />
         </div>
       </div>
     </div>
@@ -110,9 +119,18 @@
 </template>
 
 <script setup>
+import router from '@/router'
 import { ref } from 'vue'
 import { useStore } from 'vuex'
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
+
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup
+} from '@firebase/auth'
+import { doc, setDoc } from '@firebase/firestore'
+import db from '@/firebase/init'
 
 const store = useStore()
 const auth = getAuth()
@@ -142,14 +160,7 @@ const signUpErrors = ref({
   firebaseAuthError: null
 })
 
-const clearForm = () => {
-  signUpFormData.value = {
-    displayName: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  }
-
+const clearErrors = () => {
   signUpErrors.value = {
     displayName: null,
     email: null,
@@ -159,9 +170,20 @@ const clearForm = () => {
   }
 }
 
+const clearForm = () => {
+  signUpFormData.value = {
+    displayName: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  }
+
+  clearErrors()
+}
+
 const validateDisplayName = (blur) => {
   if (signUpFormData.value.displayName.length > 100) {
-    if (blur) signUpErrors.value.displayName = 'Display name is too long'
+    if (blur) signUpErrors.value.displayName = 'Display name too long'
   } else if (signUpFormData.value.displayName.trim().length === 0) {
     if (blur) signUpErrors.value.displayName = 'Please enter display name'
   } else {
@@ -174,7 +196,7 @@ const validateEmail = (blur) => {
   if (signUpFormData.value.email === '') {
     if (blur) signUpErrors.value.email = 'Please enter email'
   } else if (!emailPattern.test(signUpFormData.value.email)) {
-    signUpErrors.value.email = 'Invalid email format'
+    if (blur) signUpErrors.value.email = 'Invalid email format'
   } else {
     signUpErrors.value.email = null
   }
@@ -190,16 +212,15 @@ const validatePassword = (blur) => {
   signUpErrors.value.password = null
 
   if (password.length < minLength) {
-    if (blur)
-      signUpErrors.value.password = `Password must be at least ${minLength} characters long.`
+    if (blur) signUpErrors.value.password = `Password at least ${minLength} characters long.`
   } else if (!hasUppercase) {
-    if (blur) signUpErrors.value.password = 'Password must contain at least one uppercase letter.'
+    if (blur) signUpErrors.value.password = 'Password at least one uppercase letter.'
   } else if (!hasLowercase) {
-    if (blur) signUpErrors.value.password = 'Password must contain at least one lowercase letter.'
+    if (blur) signUpErrors.value.password = 'Password at least one lowercase letter.'
   } else if (!hasNumber) {
-    if (blur) signUpErrors.value.password = 'Password must contain at least one number.'
+    if (blur) signUpErrors.value.password = 'Password at least one number.'
   } else if (!hasSpecialChar) {
-    if (blur) signUpErrors.value.password = 'Password must contain at least one special character.'
+    if (blur) signUpErrors.value.password = 'Password at least one special character.'
   } else {
     signUpErrors.value.password = null
   }
@@ -215,7 +236,8 @@ const validateConfirmPassword = (blur) => {
   }
 }
 
-const handleRegister = () => {
+const handleRegister = async () => {
+  clearErrors()
   validateDisplayName(true)
   validateEmail(true)
   validatePassword(true)
@@ -228,41 +250,81 @@ const handleRegister = () => {
     !signUpErrors.value.confirmPassword
   ) {
     createUserWithEmailAndPassword(auth, signUpFormData.value.email, signUpFormData.value.password)
-      .then((userCredential) => {
-        const user = userCredential.user
+      .then(async (result) => {
         console.log('Firebase Register Successful!')
-        console.log(user)
+        triggerToast('success', 'Sign Up Successful', 'You have successfully Sign up.', 5000)
 
-        // TODO: Add user to Firestore database
+        const user = result.user
+        await setDoc(doc(db, 'users', user.uid), {
+          email: user.email,
+          displayName: signUpFormData.value.displayName,
+          age: null,
+          gender: -1,
+          country: null
+        })
 
-        clearForm()
-        store.dispatch('closeSignUpModal')
-        store.dispatch('openLoginModal')
+        closeModal()
+        goToLogin()
       })
       .catch((error) => {
         console.log(error.code)
         switch (error.code) {
           case 'auth/invalid-email':
-            signUpErrors.value.firebaseAuthError = 'Invalid email format'
+            signUpErrors.value.firebaseAuthError = 'Invalid email format.'
             break
           case 'auth/weak-password':
-            signUpErrors.value.firebaseAuthError = 'Password is too weak'
+            signUpErrors.value.firebaseAuthError = 'Password is too weak.'
             break
           case 'auth/email-already-in-use':
-            signUpErrors.value.firebaseAuthError = 'Email is already registered'
+            signUpErrors.value.firebaseAuthError = 'Email is already registered.'
             break
           case 'auth/too-many-requests':
-            signUpErrors.value.firebaseAuthError = 'Too many attempts, please try again later'
+            signUpErrors.value.firebaseAuthError = 'Too many attempts, please try again later.'
             break
           case 'auth/timeout':
             signUpErrors.value.firebaseAuthError = 'Request timed out, please try again'
             break
           default:
             signUpErrors.value.firebaseAuthError =
-              'Failed to create account. Please try again later'
+              'Failed to create account. Please try again later.'
         }
       })
   }
+}
+
+const signUpWithGoogle = () => {
+  const provider = new GoogleAuthProvider()
+  signInWithPopup(auth, provider)
+    .then(async (result) => {
+      console.log(result.user)
+      triggerToast('success', 'Sign Up Successful', 'You have successfully Sign up.', 5000)
+
+      const user = result.user
+      await setDoc(doc(db, 'users', user.uid), {
+        email: user.email,
+        displayName: user.displayName,
+        age: null,
+        gender: -1,
+        country: null
+      })
+
+      triggerToast('success', 'Login Successful', 'You are now logged in automatically.', 5000)
+
+      closeModal()
+      router.push(store.state.redirectPath)
+    })
+    .catch((error) => {
+      console.error('Error during sign up:', error.code)
+    })
+}
+
+const triggerToast = (severity, summary, detail, life) => {
+  store.dispatch('setTriggerToast', {
+    severity: severity,
+    summary: summary,
+    detail: detail,
+    life: life
+  })
 }
 </script>
 
@@ -278,17 +340,5 @@ const handleRegister = () => {
   justify-content: center;
   align-items: center;
   z-index: 999;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 10px;
-  width: 500px;
-}
-
-.modal-grid-detail-container {
-  display: grid;
-  grid-template-columns: 4fr 1fr;
-  justify-content: center;
 }
 </style>

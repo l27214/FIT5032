@@ -7,6 +7,10 @@ export default {
     toggleSignUpModal(state, payload) {
         state.isSignUpModalOpen = payload;
     },
+    // Handle Forgot Password modal state
+    toggleForgotPasswordModal(state, payload) {
+        state.isForgotPasswordModalOpen = payload;
+    },
     // Handle Redirect Path
     updateRedirectPath(state, payload) {
         state.redirectPath = payload;

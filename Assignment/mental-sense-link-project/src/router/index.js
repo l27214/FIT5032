@@ -54,16 +54,20 @@ const routes = [
   },
   {
     path: '/admin/dashboard',
-    name: 'Admin Dashboard',
+    name: 'Dashboard',
     component: AdminDashboardView,
     meta: { requiresAuth: true }
   }
 ]
 
+const scrollBehavior = () => {
+  return { top: 0 }
+}
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  scrollBehavior
 })
 
 const getCurrentUser = () => {
@@ -79,79 +83,100 @@ const getCurrentUser = () => {
   })
 }
 
+const permissionDenied = async () => {
+  await new Promise((resolve) => {
+    store.dispatch('setTriggerConfirm', {
+      message: 'Sorry. You do not have permission to access this page.',
+      header: 'Warning',
+      icon: 'pi pi-exclamation-triangle',
+      acceptProps: {
+        label: 'OK',
+        onClick: resolve
+      },
+      rejectProps: {
+        label: 'Close',
+        class: 'hidden-confrim-btn',
+        severity: 'secondary',
+        outlined: true
+      }
+    })
+  })
+}
+
+
+const confirmLoginRequired = async () => {
+  return new Promise((resolve) => {
+    store.dispatch('setTriggerConfirm', {
+      message: 'You need to be logged in to access this page. Click OK to login.',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      rejectProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptProps: {
+        label: 'OK'
+      },
+      accept: () => {
+        resolve(true);
+      },
+      reject: () => {
+        resolve(false);
+      }
+    });
+  });
+};
 
 router.beforeEach(async (to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (await getCurrentUser()) {
-      next()
-    } else {
-      const confirmed = await new Promise((resolve) => {
-        store.dispatch('setTriggerConfirm', {
-          message: 'You need to be logged in to access this page. Click OK to login.',
-          header: 'Confirmation',
-          icon: 'pi pi-exclamation-triangle',
-          rejectProps: {
-            label: 'Cancel',
-            severity: 'secondary',
-            outlined: true
-          },
-          acceptProps: {
-            label: 'OK'
-          },
-          accept: () => {
-            resolve(true)
-          },
-          reject: () => {
-            resolve(false)
-          }
-        })
-      })
+  console.log(to.path)
+  const currentUser = await getCurrentUser();
+  if (to.path.includes('/admin')) {
+    if (!currentUser) {
+      if (from && from.path) next(false)
+      else next('/')
 
+      const confirmed = await confirmLoginRequired()
       if (confirmed) {
         store.dispatch('setRedirectPath', to.fullPath)
-        console.log('Stored Redirect Path:', to.fullPath);
-        next(false)
         store.dispatch('openLoginModal')
       } else {
-        next(false)
+        if (from && from.path) next(false)
+        else next('/')
       }
+
+    } else if (currentUser.email !== 'admin@monash.edu') {
+      await permissionDenied()
+      next(from.path)
+    } else {
+      next()
     }
+
   } else {
-    next()
+    if (currentUser && currentUser.email === 'admin@monash.edu') {
+      await permissionDenied()
+      next('/admin/dashboard')
+    } else if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (!currentUser) {
+        if (from && from.path) next(false)
+        else next('/')
+
+        const confirmed = await confirmLoginRequired()
+        if (confirmed) {
+          store.dispatch('setRedirectPath', to.fullPath)
+          store.dispatch('openLoginModal')
+        } else {
+          if (from && from.path) next(false)
+          else next('/')
+        }
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
   }
 })
-
-// Handle user authentication for specific page
-// const isAuthenticated = computed(() => !!store.state.user)
-// const userEmail = computed(() => store.state.user?.email)
-
-// if (userEmail.value == 'admin@monash.edu' && !to.path.includes('/admin')) {
-//   window.alert('Sorry. You do not have permission to access this page.');
-//   next('/admin/dashboard')
-// } else if (to.matched.some(record => record.meta.requiresAuth)) {
-//   if (!isAuthenticated.value) {
-//     const confirmed = window.confirm('You need to be logged in to access this page. Click OK to log in.');
-
-//     if (confirmed) {
-//       // Save the path that the user originally wanted to go
-//       localStorage.setItem('redirectTo', to.fullPath);
-//       store.dispatch('openLoginModal')
-//     } else {
-//       localStorage.setItem('redirectTo', from.fullPath);
-//       next(from.fullPath);
-//     }
-//   } else {
-//     if (userEmail.value != 'admin@monash.edu' && to.path.startsWith('/admin')) {
-//       window.alert('Sorry. You do not have permission to access this page.');
-//       next('/');
-//     } else {
-//       next();
-//     }
-//   }
-// } else {
-//   next();
-// }
-// });
 
 
 // Use afterEach to get rid of use localStorage to store redirectTo.

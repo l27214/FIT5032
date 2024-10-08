@@ -5,7 +5,6 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
 import ProgressSpinner from 'primevue/progressspinner'
 
 const props = defineProps({

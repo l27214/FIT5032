@@ -120,6 +120,7 @@ onMounted(async () => {
       <header>
         <AdminSideBar />
       </header>
+
       <main>
         <router-view></router-view>
       </main>

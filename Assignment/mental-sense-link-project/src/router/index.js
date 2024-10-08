@@ -1,4 +1,3 @@
-import { computed } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ResourcesView from '../views/ResourcesView.vue'
@@ -12,6 +11,7 @@ import AdminDashboardView from '@/views/AdminDashboard/AdminDashboardView.vue'
 
 import store from '../store'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import UserManagementView from '@/views/AdminDashboard/UserManagementView.vue'
 
 const routes = [
   {
@@ -56,6 +56,12 @@ const routes = [
     path: '/admin/dashboard',
     name: 'Dashboard',
     component: AdminDashboardView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/user-management',
+    name: 'User Management',
+    component: UserManagementView,
     meta: { requiresAuth: true }
   }
 ]
@@ -177,20 +183,6 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 })
-
-
-// Use afterEach to get rid of use localStorage to store redirectTo.
-// let redirectTo = null;
-// store.state.redirectTo
-// router.afterEach(() => {
-
-//   if (isAuthenticated.value && redirectTo) {
-//     const target = redirectTo;
-//     redirectTo = null;
-//     router.push(target);
-//   }
-// });
-
 
 
 export default router

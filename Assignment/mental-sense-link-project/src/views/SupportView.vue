@@ -101,7 +101,7 @@ const toggleFaq = (index) => {
 
 <style scoped>
 .faq_area {
-  background-color: #f5f5ff;
+  background-color: #f6f6ff;
 }
 
 .faq-accordian .card {

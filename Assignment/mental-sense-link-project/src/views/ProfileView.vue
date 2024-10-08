@@ -158,11 +158,13 @@ const fetchUserData = async () => {
     const userSnapshot = await getDoc(doc(db, 'users', currentUser.uid))
     userInfo.value = userSnapshot.data()
 
+    const countryName =
+      allCountries.find((country) => country.code === userInfo.value.country)?.name || ''
     formData.value = {
       displayName: userInfo.value.displayName || '',
       age: userInfo.value.age || '',
       gender: userInfo.value.gender || '-1',
-      country: userInfo.value.country || ''
+      country: countryName || ''
     }
   } catch (error) {
     console.error('Error getting user data:', error.message)
@@ -196,11 +198,14 @@ const handleUpdateProfile = async () => {
 
   if (!errors.value.displayName && !errors.value.age) {
     try {
+      const countryCode =
+        allCountries.find((country) => country.name === formData.value.country)?.code || ''
+
       await updateDoc(doc(db, 'users', currentUser.uid), {
         displayName: formData.value.displayName,
         age: formData.value.age,
         gender: formData.value.gender,
-        country: formData.value.country
+        country: countryCode
       })
       triggerToast(
         'success',

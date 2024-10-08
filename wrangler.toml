@@ -1,9 +1,9 @@
-name = "slii-library"
+name = "sli-library"
 type = "webpack"
 account_id = "bdc091e7a78ffa1d7dc833b957e9b1d9"
 workers_dev = false
 compatibility_date = "2023-10-09"
 
 [site]
-bucket = "./dist"
-entry-point = "./dist"
+bucket = "./sli-library/dist"
+entry-point = "./sli-library/dist"

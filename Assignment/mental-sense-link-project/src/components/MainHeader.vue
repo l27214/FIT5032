@@ -44,14 +44,14 @@
 
       <!-- Search Bar -->
       <div class="navbar col mx-3">
-        <form role="search" class="w-100">
+        <!-- <form role="search" class="w-100">
           <div class="input-group">
             <input type="search" class="form-control" placeholder="Search..." aria-label="Search" />
             <button class="btn btn-outline-secondary" type="submit">
               <i class="pi pi-search"></i>
             </button>
           </div>
-        </form>
+        </form> -->
       </div>
 
       <!-- User Authentication -->
@@ -81,9 +81,9 @@
               <router-link to="/profile" class="dropdown-item" active-class="active"
                 >Profile</router-link
               >
-              <router-link to="/settings" class="dropdown-item" active-class="active"
+              <!-- <router-link to="/settings" class="dropdown-item" active-class="active"
                 >Settings</router-link
-              >
+              > -->
               <li><hr class="dropdown-divider" /></li>
               <li><a class="dropdown-item" href="#" @click.prevent="handleLogout">Logout</a></li>
             </ul>
@@ -179,11 +179,11 @@
           <hr class="my-3" />
 
           <ul class="nav flex-column mb-auto">
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <router-link to="/settings" class="nav-link d-flex align-items-center gap-2">
                 <i class="pi pi-cog" />Settings
               </router-link>
-            </li>
+            </li> -->
             <li class="nav-item">
               <button
                 class="nav-link d-flex align-items-center gap-2"

@@ -5,13 +5,15 @@ import CommunityView from '../views/CommunityView.vue'
 import SupportView from '../views/SupportView.vue'
 import AboutView from '../views/AboutView.vue'
 import ProfileView from '../views/ProfileView.vue'
-import SettingsView from '../views/SettingsView.vue'
+// import SettingsView from '../views/SettingsView.vue'
 
 import AdminDashboardView from '@/views/AdminDashboard/AdminDashboardView.vue'
 
 import store from '../store'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import UserManagementView from '@/views/AdminDashboard/UserManagementView.vue'
+import QuickTestView from '@/views/QuickTestView.vue'
+import ContentManagementView from '@/views/AdminDashboard/ContentManagementView.vue'
 
 const routes = [
   {
@@ -41,17 +43,26 @@ const routes = [
     component: AboutView
   },
   {
+    path: '/quicktest',
+    name: 'QuickTestView',
+    component: QuickTestView
+  },
+
+  // User Profile Route
+  {
     path: '/profile',
     name: 'Profile',
     component: ProfileView,
     meta: { requiresAuth: true }
   },
-  {
-    path: '/settings',
-    name: 'Settings',
-    component: SettingsView,
-    meta: { requiresAuth: true }
-  },
+  // {
+  //   path: '/settings',
+  //   name: 'Settings',
+  //   component: SettingsView,
+  //   meta: { requiresAuth: true }
+  // },
+
+  // Admin Page Route
   {
     path: '/admin/dashboard',
     name: 'Dashboard',
@@ -62,6 +73,12 @@ const routes = [
     path: '/admin/user-management',
     name: 'User Management',
     component: UserManagementView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/content-management',
+    name: 'Content Management',
+    component: ContentManagementView,
     meta: { requiresAuth: true }
   }
 ]

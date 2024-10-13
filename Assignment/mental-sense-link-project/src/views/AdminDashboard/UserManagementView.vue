@@ -1,7 +1,7 @@
 <template>
   <div class="main-content">
     <div class="d-none d-lg-flex justify-content-between align-items-center p-4 pb-3 border-bottom">
-      <h2>Dashboard</h2>
+      <h2>User Management</h2>
     </div>
 
     <div class="card m-4">
@@ -69,7 +69,6 @@
 
         <Column field="gender" header="Gender" style="width: 13%" sortable>
           <template #editor="{ data, field }">
-            <!-- <InputText v-model="data[field]" style="width: 125px" /> -->
             <Select
               v-model="data[field]"
               :options="genderOptions"
@@ -80,7 +79,7 @@
             />
           </template>
           <template #body="{ data }">
-            {{ genderOptions.find((option) => option.value === data.gender).label }}
+            {{ genderOptions.find((option) => option.value == data.gender).label }}
           </template>
         </Column>
 
@@ -161,8 +160,8 @@ const onRowEditSave = async (event) => {
       gender: newData.gender,
       country: newData.country
     })
-
-    userInfoData.value[index] = { ...newData }
+    fetchAllUserData()
+    // userInfoData.value[index] = { ...newData }
   } catch (error) {
     console.error('Error updating document: ', error)
   }

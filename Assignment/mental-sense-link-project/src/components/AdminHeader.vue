@@ -33,7 +33,7 @@
                 <i class="pi pi-users" />User Management
               </router-link>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <router-link
                 to="/admin/role-management"
                 class="nav-link d-flex align-items-center gap-2 my-1"
@@ -42,7 +42,7 @@
               >
                 <i class="pi pi-th-large" />Role Management
               </router-link>
-            </li>
+            </li> -->
             <li class="nav-item">
               <router-link
                 to="/admin/content-management"
@@ -58,7 +58,7 @@
           <hr class="my-3" />
 
           <ul class="nav nav-pills flex-column justify-content-center pe-3 mb-auto">
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <router-link
                 to="/admin/settings"
                 class="nav-link d-flex align-items-center gap-2 my-1"
@@ -67,7 +67,7 @@
               >
                 <i class="pi pi-cog" /> Settings
               </router-link>
-            </li>
+            </li> -->
             <li class="nav-item">
               <button
                 class="nav-link d-flex align-items-center gap-2 my-1"
@@ -133,7 +133,7 @@
                   <i class="pi pi-users" />User Management
                 </router-link>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <router-link
                   to="/admin/role-management"
                   class="nav-link d-flex align-items-center gap-2"
@@ -142,7 +142,7 @@
                 >
                   <i class="pi pi-th-large" />Role Management
                 </router-link>
-              </li>
+              </li> -->
               <li class="nav-item">
                 <router-link
                   to="/admin/content-management"
@@ -156,7 +156,7 @@
             </ul>
             <hr class="my-3" />
             <ul class="nav nav-pills flex-column justify-content-center pe-3 mb-auto">
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <router-link
                   to="/admin/settings"
                   class="nav-link d-flex align-items-center gap-2"
@@ -165,7 +165,7 @@
                 >
                   <i class="pi pi-cog" /> Settings
                 </router-link>
-              </li>
+              </li> -->
               <li class="nav-item">
                 <button
                   class="nav-link d-flex align-items-center gap-2"

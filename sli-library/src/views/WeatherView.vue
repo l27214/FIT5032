@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="header">
-      <p1>Get Weather</p1>
+      <p>Get Weather</p>
       <div class="search-bar">
         <input type="text" v-model="city" placeholder="Enter city name" class="search-input" />
         <button @click="searchByCity">Search</button>
@@ -13,7 +13,7 @@
     <!--If there are no data returned, then skip rendering the information-->
     <div v-if="weatherData">
       <!--Display the weather data attribute returned from API -->
-      <h2>{{ weatherData.name }}, {{ weatherData.sys.country }}</h2>
+      <h2>{{ weatherData.city }}, {{ weatherData.country }}</h2>
       <div>
         <!--The image source of of the weather icon will be coming from a function called iconUrl
                 which will be shared in script later-->
@@ -22,54 +22,74 @@
       </div>
       <!-- weather[0] means the current weather, the way we need to obtain data depends on how
           the API JSON data looks-->
-      <span>{{ weatherData.weather[0].description }}</span>
+      <span>{{ weatherData.description }}</span>
     </div>
   </main>
 </template>
 
 <script setup>
-import axios from 'axios'
 import { ref, computed, onMounted } from 'vue'
 
 const city = ref('')
 const weatherData = ref(null)
-// const hourlyForecast = ref([])
-// const dailyForecast = ref([])
-
-const apikey = import.meta.env.VITE_OPENWEATHER_API_KEY
 
 const temperature = computed(() => {
-  return weatherData.value ? Math.floor(weatherData.value.main.temp - 273) : null
+  return weatherData.value ? Math.floor(weatherData.value.temperature - 273) : null
 })
 
 const iconUrl = computed(() => {
-  return weatherData.value
-    ? `http://api.openweathermap.org/img/w/${weatherData.value.weather[0].icon}.png`
-    : null
+  return `http://api.openweathermap.org/img/w/${weatherData.value.icon}.png`
 })
 
-const fetchCurrentLocationWeather = async () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const { latitude, longitude } = position.coords
-      const url = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apikey}`
-      await fetchWeatherData(url)
+const fetchWeather = async (queryType, queryData) => {
+  try {
+    const body =
+      queryType === 'location'
+        ? JSON.stringify({ q: 'location', lat: queryData.lat, lon: queryData.lon })
+        : JSON.stringify({ q: 'city', city: queryData.city })
+
+    const response = await fetch('https://getweather-kk6pz4a3xa-uc.a.run.app', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body
     })
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    weatherData.value = data.weather
+  } catch (error) {
+    console.error(error)
   }
 }
 
-const fetchWeatherData = async (url) => {
-  try {
-    const response = await axios.get(url)
-    weatherData.value = response.data
-  } catch (error) {
-    console.error('Error fetching weather data:', error)
+const fetchCurrentLocationWeather = async () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords
+        await fetchWeather('location', { lat: latitude, lon: longitude })
+      },
+      (error) => {
+        console.error('Geolocation error:', error)
+      }
+    )
+  } else {
+    console.error('Geolocation is not supported by this browser.')
   }
 }
 
 const searchByCity = async () => {
-  const url = `http://api.openweathermap.org/data/2.5/weather?q=${city.value}&appid=${apikey}`
-  await fetchWeatherData(url)
+  if (city.value) {
+    await fetchWeather('city', { city: city.value })
+  } else {
+    console.error('City name is required.')
+  }
 }
 
 onMounted(() => {

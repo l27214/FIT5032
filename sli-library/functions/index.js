@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * Import function triggers from their respective submodules:
  *
@@ -55,3 +56,55 @@ exports.getAllBooks = onRequest((req, res) => {
     }
   });
 });
+
+exports.getWeather = onRequest((req, res) => {
+  cors(req, res, async () => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Type", "application/json");
+
+    if (req.method === "OPTIONS") {
+      res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+      res.writeHead(200);
+      res.end();
+      return;
+    }
+
+    if (req.method !== "POST") {
+      return res.status(405).send("Method Not Allowed");
+    }
+
+    const { q, city, lat, lon } = req.body;
+
+    let url;
+    if (q === "city" && city) {
+      url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=db3fa359c8658445b7e1529836fa92ef`;
+    } else if (q === "location" && lat && lon) {
+      url = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=db3fa359c8658445b7e1529836fa92ef`;
+    } else {
+      return res.status(400).send("Invalid query. Please provide either 'city' with a city name or 'location' with latitude and longitude.");
+    }
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch weather data");
+      }
+
+      const data = await response.json();
+
+      const weather = {
+        city: data.name,
+        country: data.sys.country,
+        temperature: data.main.temp,
+        description: data.weather[0].description,
+        icon: data.weather[0].icon,
+      };
+
+      res.status(200).json({ weather });
+    } catch (error) {
+      console.error("Error getting weather: ", error.message);
+      res.status(500).send(`Error getting weather: ${error.message}`);
+    }
+  });
+});
+

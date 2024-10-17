@@ -15,7 +15,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  base: '/dist',
+  base: '/FIT5032/sli-library/',
   build: {
     outDir: 'dist',
   }
